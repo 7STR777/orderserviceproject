@@ -3,7 +3,6 @@ from services.auth import auth_router
 from services.profile import profile_router
 from services.products import product_router
 from services.adminpanel import adminpanel_router
-from services.orders import order_router
 import asyncio
 import uvicorn
 from db.database import AsyncORM, StaticData
@@ -25,12 +24,6 @@ app.include_router(
     router=product_router,
     prefix="/content",
     tags=['products']
-)
-
-app.include_router(
-    router=order_router,
-    prefix="/orders",
-    tags=['orders']
 )
 
 app.include_router(
