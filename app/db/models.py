@@ -50,34 +50,6 @@ class AccessRolesRules(Base):
 
     role: Mapped["Roles"] = relationship(back_populates="access_roles_rules")
     business_element: Mapped["BusinessElements"] = relationship(back_populates="access_roles_rules")
-    
-
-class OrderProductAssociation(Base):
-    __tablename__ = 'order_product_association'
-
-    order_id: Mapped[int] = mapped_column(ForeignKey('orders.order_id'), primary_key=True)
-    product_id: Mapped[int] = mapped_column(ForeignKey('products.product_id'), primary_key=True)
-    quantity: Mapped[int] = mapped_column(default=1)
-    
-    order: Mapped["Orders"] = relationship(back_populates="product_associations")
-    product: Mapped["Products"] = relationship(back_populates="order_associations")
-
-
-class Orders(Base):
-    __tablename__ = 'orders'
-
-    order_id: Mapped[int] = mapped_column(primary_key=True)
-    order_name: Mapped[str] = mapped_column(unique=True)
-    
-    product_associations: Mapped[List["OrderProductAssociation"]] = relationship(
-        back_populates="order",
-        cascade="all, delete-orphan"
-    )
-    
-    @property
-    def products(self):
-        return [assoc.product for assoc in self.product_associations]
-
 
 class Products(Base):
     __tablename__ = 'products'
@@ -86,8 +58,3 @@ class Products(Base):
     product_name: Mapped[str] = mapped_column(unique=True)
     price: Mapped[int] = mapped_column()
     amount: Mapped[int] = mapped_column()
-    
-    order_associations: Mapped[List["OrderProductAssociation"]] = relationship(
-        back_populates="product",
-        cascade="all, delete-orphan"
-    )

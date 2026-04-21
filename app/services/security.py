@@ -1,18 +1,17 @@
 from db.config import settings
-from db.database import AsyncORM, StaticData
-from services.schemas import User, UserLogin
+from db.database import AsyncORM
+from services.schemas import User
 
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException
 from fastapi import Depends, status
-from typing import Annotated, Callable
+from typing import Annotated
 import jwt
 from functools import wraps
-from jwt.exceptions import InvalidTokenError, PyJWTError
+from jwt.exceptions import PyJWTError
 import bcrypt
-import hashlib
 from datetime import datetime, timedelta
-import re
+
 
 security = OAuth2PasswordBearer(tokenUrl="/auth/login")
 

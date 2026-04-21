@@ -17,3 +17,13 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()
+
+#.env вида:
+# SECRET_KEY = КЛЮЧ
+# ALGORITHM = HS256
+
+# DB_NAME=НАЗВАНИЕ
+# DB_HOST=localhost
+# DB_PORT=5433
+# DB_PASS=ПАРОЛЬ
+# DB_USER=postgres

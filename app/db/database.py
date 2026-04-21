@@ -1,9 +1,8 @@
-from db.models import Users, Roles, AccessRolesRules, BusinessElements, Products, Orders
+from db.models import Users, Roles, AccessRolesRules, BusinessElements, Products
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from db.config import settings
 from db.base import Base
-from typing import Optional
 from services.encrypting import encrypt_password
 
 async_engine = create_async_engine(settings.DATABASE_URL_asyncpg, echo=False)
@@ -75,8 +74,6 @@ class ProductData():
             await session.commit()
             print('[LOGS]: Product deleted!')
 
-class OrderData():
-    pass
 
 class StaticData():
     @staticmethod
@@ -98,49 +95,162 @@ class StaticData():
 
     @staticmethod
     async def add_test_users():
-        """
-        Добавляет пользователей в БД
-        """
+        """Добавляет тестовых пользователей с разными ролями"""
         async with async_session() as session:
-            stmt_for_role_id = select(Roles.role_id).where(Roles.role_name=='user')
-            result = await session.execute(stmt_for_role_id)
-            role_id = result.scalar_one_or_none()
+
+            roles = await session.execute(select(Roles))
+            roles = {r.role_name: r.role_id for r in roles.scalars()}
 
             data = [
                 {
-                    "surname":"Volkov",
-                    "name":"Sergey",
-                    "password":encrypt_password("123"),
-                    "email":"volkovsergey@mail.ru",
-                    "role_id":role_id,
-                    "is_active":True
-                }
+                    "surname": "Ivanov",
+                    "name": "Ivan",
+                    "email": "ivan@mail.com",
+                    "password": encrypt_password("123"),
+                    "role_id": roles["user"],
+                    "is_active": True
+                },
+                {
+                    "surname": "Petrov",
+                    "name": "Petr",
+                    "email": "admin@mail.com",
+                    "password": encrypt_password("admin"),
+                    "role_id": roles["admin"],
+                    "is_active": True
+                },
+                {
+                    "surname": "Sidorov",
+                    "name": "Sergey",
+                    "email": "manager@mail.com",
+                    "password": encrypt_password("manager"),
+                    "role_id": roles["manager"],
+                    "is_active": True
+                },
+                {
+                    "surname": "Guest",
+                    "name": "Guest",
+                    "email": "guest@mail.com",
+                    "password": encrypt_password("guest"),
+                    "role_id": roles["guest"],
+                    "is_active": True
+                },
             ]
 
-            stmt = insert(Users).values(
-                data
-            )
+            stmt = insert(Users).values(data)
             await session.execute(stmt)
             await session.commit()
 
     @staticmethod
     async def add_test_products():
-        """
-        Добавляет продукты в таблицу
-        """
+        """Добавляет тестовые продукты"""
         async with async_session() as session:
-            stmt = insert(Products).values(
+
+            data = [
                 {
-                    "product_name":"Футболка",
-                    "price":3999,
-                    "amount":20
+                    "product_name": "Футболка",
+                    "price": 3999,
+                    "amount": 20
                 },
                 {
-                    "product_name":"Штаны",
-                    "price":2499,
-                    "amount":45
-                }
+                    "product_name": "Штаны",
+                    "price": 2499,
+                    "amount": 45
+                },
+                {
+                    "product_name": "Кроссовки",
+                    "price": 7999,
+                    "amount": 10
+                },
+                {
+                    "product_name": "Кепка",
+                    "price": 999,
+                    "amount": 100
+                },
+            ]
+
+            stmt = insert(Products).values(data)
+            await session.execute(stmt)
+            await session.commit()
+
+    @staticmethod
+    async def add_business_elements():
+        """
+        Добавляет бизнес-сущности
+        """
+        async with async_session() as session:
+            stmt = insert(BusinessElements).values([
+                {"business_element": "products"}
+            ])
+            await session.execute(stmt)
+            await session.commit()
+
+    @staticmethod
+    async def add_access_roles_rules():
+        """Добавляет правила доступа"""
+        async with async_session() as session:
+
+            roles = await session.execute(select(Roles))
+            roles = {r.role_name: r.role_id for r in roles.scalars()}
+
+            elements = await session.execute(
+                select(BusinessElements).where(BusinessElements.business_element == "products")
             )
+            product_element = elements.scalar_one_or_none()
+
+            if not product_element:
+                raise Exception("Business element 'products' not found")
+
+            data = [
+                {
+                    "role_id": roles["admin"],
+                    "business_element_id": product_element.business_element_id,
+                    "read_permission": True,
+                    "read_all_permission": True,
+                    "create_permission": True,
+                    "update_permission": True,
+                    "update_all_permission": True,
+                    "delete_permission": True,
+                    "delete_all_permission": True,
+                },
+
+                {
+                    "role_id": roles["user"],
+                    "business_element_id": product_element.business_element_id,
+                    "read_permission": True,
+                    "read_all_permission": True,
+                    "create_permission": False,
+                    "update_permission": False,
+                    "update_all_permission": False,
+                    "delete_permission": False,
+                    "delete_all_permission": False,
+                },
+
+                {
+                    "role_id": roles["manager"],
+                    "business_element_id": product_element.business_element_id,
+                    "read_permission": True,
+                    "read_all_permission": True,
+                    "create_permission": True,
+                    "update_permission": True,
+                    "update_all_permission": True,
+                    "delete_permission": False,
+                    "delete_all_permission": False,
+                },
+
+                {
+                    "role_id": roles["guest"],
+                    "business_element_id": product_element.business_element_id,
+                    "read_permission": True,
+                    "read_all_permission": False,
+                    "create_permission": False,
+                    "update_permission": False,
+                    "update_all_permission": False,
+                    "delete_permission": False,
+                    "delete_all_permission": False,
+                },
+            ]
+
+            stmt = insert(AccessRolesRules).values(data)
             await session.execute(stmt)
             await session.commit()
 

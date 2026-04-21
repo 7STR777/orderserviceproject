@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import Annotated
 
 from services.schemas import User, UpdateFieldOfPermission
-from db.database import OrderData, AsyncORM, ProductData, AdminPanel
+from db.database import AdminPanel
 from services.security import get_current_user_from_token, admin_required
 
 

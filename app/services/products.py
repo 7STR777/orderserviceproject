@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import Annotated
 
 from services.schemas import User, UpdateProduct, CreateProduct, UpdateFieldsOfProduct
-from db.database import OrderData, AsyncORM, ProductData
+from db.database import AsyncORM, ProductData
 from services.security import get_current_user_from_token
 
 
@@ -31,7 +31,7 @@ async def show_all_products(current_user: Annotated[User, Depends(get_current_us
             status_code=status.HTTP_200_OK,
             detail='Список пуст'
         )
-    return permissions
+    return products
 
 @product_router.post("/products")
 async def create_product(crpr: CreateProduct, current_user: Annotated[User, Depends(get_current_user_from_token)]):
@@ -98,9 +98,9 @@ async def update_fields_product(product_id: int,updatepr: UpdateFieldsOfProduct,
         )
     update_data = updatepr.model_dump(exclude_none=True)
     field_mapping = {
-    "new_product_name": "product_name",
-    "new_amount": "amount",
-    "new_price":"price"
+        "new_product_name": "product_name",
+        "new_amount": "amount",
+        "new_price":"price"
     }
     raw_data = updatepr.model_dump(exclude_none=True)
     update_data = {

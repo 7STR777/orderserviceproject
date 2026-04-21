@@ -1,12 +1,11 @@
 from fastapi import FastAPI,APIRouter
 from services.auth import auth_router
 from services.profile import profile_router
-from services.orders import order_router
 from services.products import product_router
 from services.adminpanel import adminpanel_router
 import asyncio
 import uvicorn
-from db.database import AsyncORM
+from db.database import AsyncORM, StaticData
 
 app = FastAPI()
 app.include_router(
@@ -19,12 +18,6 @@ app.include_router(
     router=profile_router,
     prefix="/profile",
     tags=["profile"]
-)
-
-app.include_router(
-    router=order_router,
-    prefix="/orders",
-    tags=["orders"]
 )
 
 app.include_router(
@@ -42,7 +35,12 @@ app.include_router(
 @app.get("/refreshdb", tags=['database'])
 async def main():
     await AsyncORM.init_db()
-    return {"message":"Main page"}
+    await StaticData.add_test_roles()
+    await StaticData.add_business_elements()
+    await StaticData.add_test_users()
+    await StaticData.add_test_products()
+    await StaticData.add_access_roles_rules()
+    return {"message":"Database refreshed!"}
 
 
 if __name__ == "__main__":
