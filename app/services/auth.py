@@ -2,10 +2,10 @@ from fastapi import APIRouter, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from services.schemas import User
-from db.database import AsyncORM
-from services.security import create_jwt_token, get_current_user, get_current_user_from_token
-from services.encrypting import encrypt_password, email_validation
+from app.services.schemas import User
+from app.db.database import AsyncORM
+from app.services.security import create_jwt_token, get_current_user, get_current_user_from_token
+from app.services.encrypting import encrypt_password, email_validation
 from typing import Annotated
 from starlette import status
 

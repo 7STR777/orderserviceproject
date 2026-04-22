@@ -1,9 +1,9 @@
-from db.models import Users, Roles, AccessRolesRules, BusinessElements, Products
+from app.db.models import Users, Roles, AccessRolesRules, BusinessElements, Products
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from db.config import settings
-from db.base import Base
-from services.encrypting import encrypt_password
+from app.db.config import settings
+from app.db.base import Base
+from app.services.encrypting import encrypt_password
 
 async_engine = create_async_engine(settings.DATABASE_URL_asyncpg, echo=False)
 
@@ -105,8 +105,8 @@ class StaticData():
                 {
                     "surname": "Ivanov",
                     "name": "Ivan",
-                    "email": "ivan@mail.com",
-                    "password": encrypt_password("123"),
+                    "email": "user@mail.com",
+                    "password": encrypt_password("user"),
                     "role_id": roles["user"],
                     "is_active": True
                 },

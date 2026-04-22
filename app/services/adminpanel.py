@@ -2,9 +2,9 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import Annotated
 
-from services.schemas import User, UpdateFieldOfPermission
-from db.database import AdminPanel
-from services.security import get_current_user_from_token, admin_required
+from app.services.schemas import User, UpdateFieldOfPermission
+from app.db.database import AdminPanel
+from app.services.security import get_current_user_from_token, admin_required
 
 
 adminpanel_router = APIRouter()

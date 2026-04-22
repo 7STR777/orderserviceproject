@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from typing import Annotated
-from services.security import get_current_user_from_token
-from services.encrypting import email_validation, encrypt_password
-from services.schemas import ChangePassword, User, ChangeEmail, ChangeCredentials, DeleteUser
-from db.database import AsyncORM
+from app.services.security import get_current_user_from_token
+from app.services.encrypting import email_validation, encrypt_password
+from app.services.schemas import ChangePassword, User, ChangeEmail, ChangeCredentials, DeleteUser
+from app.db.database import AsyncORM
 import bcrypt
 
 profile_router = APIRouter()

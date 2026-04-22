@@ -1,6 +1,6 @@
-from db.config import settings
-from db.database import AsyncORM
-from services.schemas import User
+from app.db.config import settings
+from app.db.database import AsyncORM
+from app.services.schemas import User
 
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException

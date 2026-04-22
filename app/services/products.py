@@ -2,9 +2,9 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import Annotated
 
-from services.schemas import User, UpdateProduct, CreateProduct, UpdateFieldsOfProduct
-from db.database import AsyncORM, ProductData
-from services.security import get_current_user_from_token
+from app.services.schemas import User, UpdateProduct, CreateProduct, UpdateFieldsOfProduct
+from app.db.database import AsyncORM, ProductData
+from app.services.security import get_current_user_from_token
 
 
 product_router = APIRouter()

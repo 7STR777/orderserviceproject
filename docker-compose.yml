@@ -9,12 +9,26 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpass
       POSTGRES_DB: testproject
-      POSTGRES_HOST: 127.0.0.1
-      POSTGRES_PORT: 5433
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: web_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
 
 volumes:
   postgres_data:

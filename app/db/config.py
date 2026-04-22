@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = ""
     DB_USER: str = ""
     DB_HOST: str = ""
-    DB_PORT: int = 5433
+    DB_PORT: int = 5432
     DB_NAME: str = ""
     DB_PASS: str = ""
 
@@ -24,6 +24,6 @@ settings = Settings()
 
 # DB_NAME=НАЗВАНИЕ
 # DB_HOST=localhost
-# DB_PORT=5433
+# DB_PORT=5432
 # DB_PASS=ПАРОЛЬ
 # DB_USER=postgres
