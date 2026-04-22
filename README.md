@@ -1,5 +1,5 @@
 # 📦 Order Service Project
-
+КОД ПРОЕКТА ПРЕДСТАВЛЕН В ПАПКЕ APP->DB И SERVICES
 ---
 
 ## 🚀 Запуск проекта
@@ -10,6 +10,7 @@
 docker compose up --build
 Альтернативный вариант (если уже собран образ)
 docker compose up
+запуск проекта осуществляется командой python.exe app/main.py
 
 Перед запуском убедитесь, что:
 	установлен Docker
